@@ -9,6 +9,8 @@ const webAppURL = 'https://competitiom-organizer-web-app.netlify.app'
 const bot = new TelegramBot(token, {polling: true});
 const app = express();
 
+const sequelize = require('./db')
+
 app.use(express.json());
 app.use(cors());
 
@@ -17,14 +19,6 @@ bot.on('message', async (msg) => {
     const text = msg.text;
 
     if(text === '/start') {
-        // await bot.sendMessage(chatId, 'Ниже появится кнопка, заполни форму', {
-        //     reply_markup: {
-        //         keyboard: [
-        //             [{text: 'Заполнить форму', web_app: {url: webAppUrl + '/form'}}]
-        //         ]
-        //     }
-        // })
-
         await bot.sendMessage(chatId, 'Добро пожаловать в бота который будет организовывать игру внутри организации.', {
             reply_markup: {
                 inline_keyboard: [
@@ -36,3 +30,14 @@ bot.on('message', async (msg) => {
 
 })
 
+const start = async () => {
+    try {
+        await sequelize.authenticate()
+        await sequelize.sync()
+        app.listen(process.env.PORT, ()=>{console.log(`Node server starts on port ${process.env.PORT}`)})
+    } catch (error) {
+       console.log(`Error on port listening: ${error}`) 
+    }
+}
+
+start()
