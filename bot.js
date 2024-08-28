@@ -30,6 +30,7 @@ bot.on('message', async (msg) => {
 
 })
 
+
 const start = async () => {
     try {
         await sequelize.authenticate()
